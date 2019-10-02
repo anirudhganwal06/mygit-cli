@@ -1,0 +1,40 @@
+#! /usr/bin/env python
+import argparse
+import pygit2
+import os
+import sys
+import path
+
+def run(args):
+    abspath = os.path.abspath(os.path.curdir)
+    if (os.path.exists(abspath + "/.git")):
+        repo = pygit2.Repository(abspath + "/.git")
+    if (args.action == "init"):
+        if (os.path.exists(abspath + "/.git")):
+            repo = pygit2.init_repository(abspath)
+            print("Reinitialized an empty git repository!")
+        else:    
+            repo = pygit2.init_repository(abspath)
+            print("Yeah! an empty git repository has been initialized!")
+    elif (args.action == "add"):
+        print("mygit add")    
+        # pygit2.Index.add_all([])
+        index = repo.index
+        index.add_all()
+        for entry in index:
+            print("in the loop")
+            print(entry.path)
+    elif (args.action == "commit"):
+        print("mygit commit") 
+        # repo.create_commit("refs/heads/master", "Anirudh", "Anirudh", "initial commit", )       
+    
+def main():
+    parser = argparse.ArgumentParser(description = "Welcome to mygit")
+    parser.add_argument("action", help = "It specifies the action to be performed, eg: init, add, commit etc", choices = ["init", "add", "commit"])
+    # parser.add_argument("addFile", help = "It specifies the files whose changes needs to be staged")
+
+    args = parser.parse_args()
+    run(args)
+
+if __name__ == "__main__":
+    main()
